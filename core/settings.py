@@ -24,20 +24,32 @@ DEBUG   = os.getenv('DEBUG', False)
 DEVEL   = os.getenv('DEVEL', False)
 SERVER  = os.getenv('DEVEL', '127.0.0.1')
 
+ZALO_TTS_API_KEY = "r4OQbtCrRbldRpM15AUEHGk3Q5BrZ857"
+MQTT_BROKER_HOST = os.getenv('MQTT_BROKER_HOST', '103.252.136.73')
+MQTT_BROKER_PORT = int(os.getenv('MQTT_BROKER_PORT', 1883))
+MQTT_TOPIC = os.getenv('MQTT_TOPIC', 'IOT/#')
+MQTT_USERNAME = os.getenv('MQTT_USERNAME', 'admin')
+MQTT_PASSWORD = os.getenv('MQTT_PASSWORD', 'admin')
+TIME_SAVE = os.getenv('TIME_SAVE', 5)
 # load production server from .env
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', SERVER]
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+        'channels',
+    'daphne',
+     'import_export',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',  # Enable the inner app
-    'customers'
+    'sensors',  # Enable the inner app
+    'mqtt_call',  # Enable the inner app
+
 ]
 
 MIDDLEWARE = [
@@ -82,6 +94,19 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME'  : 'db.sqlite3',
     }
+}
+ASGI_APPLICATION = "core.asgi.application"
+REDIS_HOST = os.getenv('REDIS_HOST', '0.0.0.0')
+REDIS_PORT = os.getenv('REDIS_PORT', 6379)
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(str(REDIS_HOST), int(REDIS_PORT))]
+
+        },
+    },
 }
 
 # Password validation

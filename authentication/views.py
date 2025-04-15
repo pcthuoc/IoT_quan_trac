@@ -12,8 +12,8 @@ from django.contrib.auth.models import User
 from django.forms.utils import ErrorList
 from django.http import HttpResponse
 from .forms import LoginForm, SignUpForm
-
-
+from django.views import View
+from django.contrib.auth import logout
 def login_view(request):
     form = LoginForm(request.POST or None)
 
@@ -27,7 +27,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect("/customers/profile/")
+                return redirect("/")
             else:
                 msg = 'Invalid credentials'
         else:
@@ -59,3 +59,7 @@ def register_user(request):
         form = SignUpForm()
 
     return render(request, "accounts/register.html", {"form": form, "msg": msg, "success": success})
+class LogoutUser(View):
+    def get(self, request):
+        logout(request)
+        return redirect("/")
